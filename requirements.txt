@@ -1,0 +1,4 @@
+# git+https until PyPI ships RM Max (0xAF8B). Overlay in broadlink_core still
+# forces rmpro framing even if upstream maps wrong.
+broadlink @ git+https://github.com/mjg59/python-broadlink.git@master
+pytest>=7.0

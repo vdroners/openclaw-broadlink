@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "default_device": "rm-max",
+  "devices": [
+    {
+      "id": "rm-max",
+      "nickname": "rm-max",
+      "aliases": ["broadlink", "rmmax", "living-blaster"],
+      "host": "10.0.0.174",
+      "mac": "34:8e:89:b1:10:2a",
+      "type": "0xaf8b",
+      "model": "RM Max",
+      "discovery_name": "FCBLE GW",
+      "capabilities": ["ir", "rf"],
+      "notes": "Lab LAN BL-b1-10-2a; prefer unicast hello (broadcast often empty when cloud-locked)"
+    }
+  ]
+}

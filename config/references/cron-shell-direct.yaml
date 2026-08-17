@@ -1,0 +1,9 @@
+# Optional shell-direct cron jobs (systemd user timers).
+# Prefixed alfred-cron-* on Alfred. Not installed by default.
+jobs:
+  - id: d4e5f6a7-broadlink-health
+    name: broadlink-health
+    script: ${OPENCLAW_DIR}/scripts/broadlink-health.sh
+    success_grep: BROADLINK_HEALTH
+    schedule: "15 */6 * * *"
+    tz: America/Los_Angeles

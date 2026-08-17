@@ -1,0 +1,14 @@
+.env
+.env.d/
+*.secret
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+logs/*.log
+state/broadlink-codes/
+*.egg-info/
+dist/
+build/
+.DS_Store
