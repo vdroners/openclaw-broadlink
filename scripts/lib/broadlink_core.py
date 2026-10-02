@@ -183,8 +183,12 @@ def device_status_dict(device_cfg: dict[str, Any] | None = None, *, try_auth: bo
         "devtype": None,
         "name": None,
         "cloud": None,
+        "is_locked": None,
+        "manufacturer": None,
+        "model_runtime": None,
         "error_code": None,
         "errors": [],
+        "hint": None,
     }
     try:
         device = hello_device(dcfg["host"])
@@ -193,15 +197,26 @@ def device_status_dict(device_cfg: dict[str, Any] | None = None, *, try_auth: bo
         out["class"] = getattr(device, "TYPE", type(device).__name__)
         out["name"] = getattr(device, "name", None)
         out["cloud"] = getattr(device, "cloud", None)
+        out["is_locked"] = bool(getattr(device, "is_locked", False))
+        out["manufacturer"] = getattr(device, "manufacturer", None)
+        out["model_runtime"] = getattr(device, "model", None)
         if try_auth:
             try:
                 device.auth()
                 out["auth"] = True
+                out["is_locked"] = bool(getattr(device, "is_locked", False))
             except Exception as exc:  # noqa: BLE001
                 out["auth"] = False
                 out["ok"] = False
                 out["error_code"] = "auth_failed"
                 out["errors"].append(str(exc))
+                out["is_locked"] = bool(getattr(device, "is_locked", True))
+                out["hint"] = (
+                    "Device is locked for LAN control (is_locked). "
+                    "RM Max often has no Lock toggle in Broadlink app — "
+                    "try Magic Home 'Connect to a 3rd-party', or Path B reset "
+                    "(docs/UNLOCK-SOP.md)."
+                )
     except Exception as exc:  # noqa: BLE001
         out["ok"] = False
         out["error_code"] = "hello_failed"

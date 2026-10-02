@@ -37,7 +37,7 @@ BROADLINK_ENABLED=1 bash scripts/broadlink-device.sh discover
 BROADLINK_ENABLED=1 bash scripts/broadlink-device.sh auth   # after unlock
 ```
 
-Docs: [BROADLINK-RM-MAX.md](docs/BROADLINK-RM-MAX.md), [UNLOCK-SOP.md](docs/UNLOCK-SOP.md), [LEARN-PROOF.md](docs/LEARN-PROOF.md), [TALK-WIRING.md](docs/TALK-WIRING.md).
+Docs: [BROADLINK-RM-MAX.md](docs/BROADLINK-RM-MAX.md), [UNLOCK-SOP.md](docs/UNLOCK-SOP.md), [LOCKED-CAPABILITIES.md](docs/LOCKED-CAPABILITIES.md), [LEARN-PROOF.md](docs/LEARN-PROOF.md), [TALK-WIRING.md](docs/TALK-WIRING.md).
 
 ---
 

@@ -9,10 +9,12 @@
 | MAC | `34:8e:89:b1:10:2a` |
 | Device type | `0xaf8b` |
 | Discovery name | `FCBLE GW` |
+| Firmware | **v62336** (app Device own info, 2026-09-05) |
+| SDK / plug-in | 2.18.10 / 1.6.8 |
 | Unicast hello | Works from Alfred host |
-| Broadcast discover | Often empty (treat as cloud-lock signal) |
-| Auth (2026-08-17) | **FAIL** until Magic Home unlock — see [UNLOCK-SOP.md](UNLOCK-SOP.md) |
-| Framing class | Discover returns `RMPRO` (overlay OK) |
+| Broadcast discover | Often empty (treat as lock / cloud-mode signal) |
+| Auth (2026-09-05 re-probe) | **FAIL** — `is_locked=True`; Broadlink app has **no Lock toggle** on RM Max (known); try Magic Home 3rd-party or Path B — see [UNLOCK-SOP.md](UNLOCK-SOP.md) |
+| Framing class | Discover returns `RMPRO` (overlay OK; matches PR #838) |
 
 ## Protocol
 

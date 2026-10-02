@@ -76,7 +76,7 @@ def cmd_auth(args: argparse.Namespace) -> int:
                 "command": "auth",
                 "error_code": "auth_failed",
                 "errors": [str(exc)],
-                "hint": "Unlock in Magic Home (Lock off / 3rd-party) — see docs/UNLOCK-SOP.md",
+                "hint": "Device is locked for LAN control (is_locked). RM Max often has no Lock toggle in Broadlink app — try Magic Home 'Connect to a 3rd-party', or Path B reset (docs/UNLOCK-SOP.md).",
             }
         )
 

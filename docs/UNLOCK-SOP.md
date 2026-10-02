@@ -2,55 +2,65 @@
 
 Local `auth()` is required before learn/send. Phone-app control can work while third-party LAN auth is locked.
 
-## Which app?
+## Device fingerprint (this unit)
 
-Use the **official Broadlink** app (iOS/Android), **not** Magic Home.
+From Broadlink app “Device own info” (2026-09-05):
 
-Magic Home is a legacy third-party client. Newer blasters (RM4 / RM Max) often **never show** Lock / 3rd-party toggles there — that matches “I don’t see that option.”
+| Field | Value |
+|-------|--------|
+| IP | `10.0.0.174@80` |
+| MAC | `34:8e:89:b1:10:2a` |
+| DID | `…348e89b1102a` |
+| PID | `…8baf0000` (`0xAF8B` little-endian — RM Max) |
+| Firmware | **v62336** |
+| SDK | **2.18.10** |
+| Plug-in | 1.6.8 |
+| Data / IoT Cloud | Other regions |
 
-## Path A — unlock without reset (try first)
+Alfred probe: unicast hello OK (`RMPRO` / `FCBLE GW`); `device.is_locked == True` after failed `auth()`; broadcast discover empty.
 
-1. Open **Broadlink** (official).
-2. Tap the **RM Max** device on the home screen.
-3. Tap **⋯** (top right) → **Property** / **Device information** / **Settings**.
-4. Find **Lock device** (sometimes near the bottom).
-5. Toggle **Lock device → Off**. Confirm if prompted.
-6. Force-quit the app.
-7. From Alfred:
+## Why you may not see “Lock device”
+
+On **RM Max**, the official Broadlink app often **omits** the Lock / Property toggle entirely (reported on [python-broadlink#829](https://github.com/mjg59/python-broadlink/issues/829)). Missing UI ≠ unlocked. Our probe still sees `is_locked=True`.
+
+## Path A — Magic Home “3rd-party” (try before reset)
+
+1. Install / open **Magic Home** (legacy Broadlink client), same Wi‑Fi as the RM Max.
+2. Add or open the RM Max if it appears.
+3. Look for **Connect to a 3rd-party** / local **server** or **client** and enable third-party / local control.
+4. Force-quit the app.
+5. From Alfred:
 
 ```bash
-cd /media/4TB/openclaw-broadlink
-BROADLINK_ENABLED=1 bash scripts/broadlink-device.sh auth
+BROADLINK_ENABLED=1 bash /media/4TB/openclaw-broadlink/scripts/broadlink-device.sh auth
 ```
 
-Expected success: JSON with `"ok": true, "command": "auth"`.
+Expected: `"ok": true, "command": "auth"`.
 
-If there is **no Lock toggle** at all on this firmware, go to Path B.
+If Magic Home cannot add the device or has no 3rd-party control, go to Path B.
 
-## Path B — Wi‑Fi only / abort cloud bind (common when Lock is missing)
+## Path B — Wi‑Fi only / abort cloud bind (recommended when Lock UI is missing)
 
-Community SOP used for RM4 Pro / RM Max when the lock UI is absent:
-
-1. In the Broadlink app, **delete / remove** the RM Max from the account (if present).
-2. **Factory reset** the hardware: hold reset ~6s until the LED blinks fast.
-3. Re-add the device and complete **Wi‑Fi join only**.
-4. As soon as it is on the LAN, **force-quit the Broadlink app** before finishing cloud pairing / room assignment / “lock” prompts when possible.
+1. In the Broadlink app, **delete / remove** the RM Max from the account.
+2. **Factory reset:** hold reset ~6s until the LED blinks fast.
+3. Re-add and complete **Wi‑Fi join only**.
+4. As soon as it is on the LAN (`10.0.0.174` or a new DHCP lease), **force-quit the Broadlink app** before finishing cloud pairing / room / lock prompts.
 5. Prefer a **static DHCP reservation** for `34:8e:89:b1:10:2a` → `10.0.0.174`.
-6. Retry `auth` from Alfred (command above).
+6. Retry `auth` (command above).
 
-Trade-off: phone-app cloud features may stop working; local Alfred control is the goal.
+Trade-off: phone cloud features may stop; local Alfred control is the goal.
 
 ## Path C — still failing
 
-- Same subnet as `10.0.0.84` (no AP isolation / IoT VLAN blocking UDP).
-- Confirm discover still works: `BROADLINK_ENABLED=1 bash scripts/broadlink-device.sh discover`
-- Re-check framing is `RMPRO` (already validated for `0xaf8b`).
-- Record firmware string from the app (Property → Firmware) in [BROADLINK-RM-MAX.md](BROADLINK-RM-MAX.md).
+- Same subnet as `10.0.0.84` (no AP isolation).
+- Confirm discover: `BROADLINK_ENABLED=1 bash …/broadlink-device.sh discover`
+- Framing is already `RMPRO` for `0xaf8b` (correct per PR #838; wrong class causes *fake* lock — we are past that).
 
 ## Auth probe result (this install)
 
 | When (UTC) | Hello | Auth | Class | Notes |
 |------------|-------|------|-------|-------|
-| 2026-08-17 (agent probe) | **ok** `0xaf8b` name=`FCBLE GW` | **FAIL** `[Errno -1] Authentication failed` | `RMPRO` (framing overlay OK) | Unicast hello works; local `auth()` blocked — use official Broadlink app Path A, else Path B |
+| 2026-08-17 | **ok** | **FAIL** | `RMPRO` | First probe |
+| 2026-09-05 | **ok**; `is_locked=True`; FW v62336 / SDK 2.18.10 | **FAIL** | `RMPRO` | Operator: no Lock UI in Broadlink app; Path A Magic Home 3rd-party or Path B |
 
 **Learn/send blocked** until auth succeeds. Do not set `BROADLINK_ACTUATION_ENABLED=1` until one IR learn+send works.

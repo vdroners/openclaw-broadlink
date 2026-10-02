@@ -49,4 +49,4 @@ Never accept raw hex/base64 from Talk — named codes only.
 
 ## Unlock first
 
-If `auth` fails, follow `docs/UNLOCK-SOP.md` (Magic Home Lock off / 3rd-party, or reset + local Wi‑Fi).
+If `auth` fails, follow `docs/UNLOCK-SOP.md` (Path A: Magic Home "Connect to a 3rd-party"; Path B: reset + Wi‑Fi only — RM Max has no Lock toggle in the official app).
